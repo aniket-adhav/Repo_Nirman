@@ -142,7 +142,7 @@ export default function ChatBot() {
   return (
     <>
       {/* Floating button */}
-      <div style={{ position: 'fixed', bottom: isMobile ? '76px' : '24px', right: '24px', zIndex: 1000, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
+      <div style={{ position: 'fixed', bottom: isMobile ? '90px' : '42px', right: '18px', zIndex: 1000, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
 
         {/* Hover speech bubble */}
         <AnimatePresence>
@@ -174,12 +174,12 @@ export default function ChatBot() {
           onClick={() => setOpen(o => !o)}
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
-          whileHover={{ scale: 1.1 }}
+          whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.94 }}
           style={{
-            width: '58px', height: '58px', borderRadius: '50%', border: 'none', cursor: 'pointer',
-            background: 'var(--gradient-primary)',
-            boxShadow: '0 4px 20px rgba(59,130,246,0.45)',
+            width: '68px', height: '68px', borderRadius: '50%', border: '1px solid #2a2a2a', cursor: 'pointer',
+            background: 'linear-gradient(145deg, #1c1c1e, #0a0a0a)',
+            boxShadow: '0 6px 28px rgba(0,0,0,0.65), 0 2px 8px rgba(0,0,0,0.4)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}
           aria-label="Open help chat"
@@ -214,22 +214,23 @@ export default function ChatBot() {
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: 'spring', stiffness: 300, damping: 28 }}
             style={{
-              position: 'fixed', bottom: isMobile ? '144px' : '88px', right: isMobile ? '12px' : '24px', zIndex: 999,
+              position: 'fixed', bottom: isMobile ? '162px' : '120px', right: isMobile ? '12px' : '18px', zIndex: 999,
               width: isMobile ? 'calc(100vw - 24px)' : '330px', maxWidth: '330px', maxHeight: isMobile ? '60vh' : '480px',
               borderRadius: '18px', overflow: 'hidden',
-              background: 'hsl(var(--card))',
-              border: '1px solid hsl(var(--border))',
-              boxShadow: '0 16px 48px rgba(0,0,0,0.2)',
+              background: '#0d0d0d',
+              border: '1px solid #222',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.75)',
               display: 'flex', flexDirection: 'column',
             }}
           >
             {/* Header */}
             <div style={{
               padding: '13px 16px',
-              background: 'var(--gradient-primary)',
+              background: 'linear-gradient(135deg, #1a1a1a, #111111)',
+              borderBottom: '1px solid #222',
               display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0,
             }}>
-              <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'rgba(255,255,255,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: '#222', border: '1px solid #333', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <i className="fas fa-robot" style={{ color: '#fff', fontSize: '0.95rem' }} />
               </div>
               <div style={{ flex: 1 }}>
@@ -241,13 +242,13 @@ export default function ChatBot() {
                 </div>
               </div>
               <button onClick={handleReset} title="Restart conversation"
-                style={{ background: 'rgba(255,255,255,0.15)', border: 'none', borderRadius: '8px', padding: '5px 9px', cursor: 'pointer', color: 'rgba(255,255,255,0.85)', fontSize: '0.7rem' }}>
+                style={{ background: '#2a2a2a', border: '1px solid #333', borderRadius: '8px', padding: '5px 9px', cursor: 'pointer', color: 'rgba(255,255,255,0.75)', fontSize: '0.7rem' }}>
                 <i className="fas fa-rotate-right" />
               </button>
             </div>
 
             {/* Messages */}
-            <div style={{ flex: 1, overflowY: 'auto', padding: '12px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div style={{ flex: 1, overflowY: 'auto', padding: '12px', display: 'flex', flexDirection: 'column', gap: '10px', background: '#0d0d0d' }}>
               <AnimatePresence initial={false}>
                 {messages.map((msg, i) => (
                   <motion.div key={i}
@@ -255,7 +256,7 @@ export default function ChatBot() {
                     style={{ display: 'flex', justifyContent: msg.type === 'user' ? 'flex-end' : 'flex-start', gap: '7px', alignItems: 'flex-end' }}
                   >
                     {msg.type === 'bot' && (
-                      <div style={{ width: '26px', height: '26px', borderRadius: '50%', background: 'var(--gradient-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginBottom: '2px' }}>
+                      <div style={{ width: '26px', height: '26px', borderRadius: '50%', background: '#222', border: '1px solid #333', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginBottom: '2px' }}>
                         <i className="fas fa-robot" style={{ color: '#fff', fontSize: '0.62rem' }} />
                       </div>
                     )}
@@ -264,9 +265,9 @@ export default function ChatBot() {
                       padding: '9px 13px',
                       borderRadius: msg.type === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
                       background: msg.type === 'user'
-                        ? 'var(--gradient-primary)'
-                        : 'hsl(var(--muted))',
-                      color: msg.type === 'user' ? '#fff' : 'hsl(var(--foreground))',
+                        ? 'linear-gradient(135deg, #2563eb, #1d4ed8)'
+                        : '#1c1c1e',
+                      color: '#fff',
                       fontSize: '0.77rem',
                       lineHeight: 1.6,
                       fontFamily: "'DM Sans', sans-serif",
@@ -291,17 +292,17 @@ export default function ChatBot() {
                         onClick={() => handleOption(opt)}
                         style={{
                           padding: '8px 12px', borderRadius: '10px',
-                          border: '1px solid hsl(var(--border))',
-                          background: 'hsl(var(--background))',
-                          color: 'hsl(var(--foreground))',
+                          border: '1px solid #2a2a2a',
+                          background: '#1c1c1e',
+                          color: 'rgba(255,255,255,0.85)',
                           fontSize: '0.74rem',
                           fontFamily: "'DM Sans', sans-serif",
                           fontWeight: 500,
                           textAlign: 'left', cursor: 'pointer',
                           transition: 'all 0.15s',
                         }}
-                        onMouseEnter={e => { e.currentTarget.style.background = 'rgba(59,130,246,0.08)'; e.currentTarget.style.borderColor = 'hsl(217,91%,60%)'; e.currentTarget.style.color = 'hsl(217,91%,60%)'; }}
-                        onMouseLeave={e => { e.currentTarget.style.background = 'hsl(var(--background))'; e.currentTarget.style.borderColor = 'hsl(var(--border))'; e.currentTarget.style.color = 'hsl(var(--foreground))'; }}
+                        onMouseEnter={e => { e.currentTarget.style.background = '#2563eb22'; e.currentTarget.style.borderColor = '#2563eb'; e.currentTarget.style.color = '#60a5fa'; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = '#1c1c1e'; e.currentTarget.style.borderColor = '#2a2a2a'; e.currentTarget.style.color = 'rgba(255,255,255,0.85)'; }}
                       >
                         {opt.label}
                       </motion.button>
@@ -314,8 +315,8 @@ export default function ChatBot() {
             </div>
 
             {/* Footer hint */}
-            <div style={{ padding: '8px 14px', borderTop: '1px solid hsl(var(--border))', background: 'hsl(var(--muted))', flexShrink: 0 }}>
-              <p style={{ fontSize: '0.6rem', color: 'hsl(var(--muted-foreground))', fontFamily: "'DM Sans', sans-serif", textAlign: 'center', margin: 0 }}>
+            <div style={{ padding: '8px 14px', borderTop: '1px solid #1e1e1e', background: '#111', flexShrink: 0 }}>
+              <p style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.35)', fontFamily: "'DM Sans', sans-serif", textAlign: 'center', margin: 0 }}>
                 Select an option above · Tap ↺ to restart
               </p>
             </div>
