@@ -392,7 +392,6 @@ export default function CommunityFeed() {
 
       {/* Trending */}
       <div className="mb-7">
-        <p className="text-[10px] font-black tracking-[0.22em] uppercase text-blue-500/70 mb-0.5">{t('feed.pulse')}</p>
         <h2 className="text-xl font-black text-foreground">{t('feed.trending')}</h2>
         <TrendingCarousel issues={trendingIssues} onSupport={toggleLike} onOpen={(issue) => navigateTo('issueDetail', issue)} t={t} />
       </div>
