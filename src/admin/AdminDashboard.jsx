@@ -1183,7 +1183,7 @@ function ComplaintsTab({ dark, complaints, onSelect }) {
                       ? (dark ? 'bg-red-900/30 text-red-300 border border-red-700' : 'bg-red-100 text-red-700 border border-red-200')
                       : (dark ? 'bg-emerald-900/30 text-emerald-300 border border-emerald-700' : 'bg-emerald-100 text-emerald-700 border border-emerald-200')
                   }`}>
-                    {c.aiAnalysis?.isSpam ? 'Fake' : 'Real'}
+                    <i className={`fas ${c.aiAnalysis?.isSpam ? 'fa-triangle-exclamation' : 'fa-shield-check'} mr-1 text-[9px]`} />{c.aiAnalysis?.isSpam ? 'Fake' : 'Real'}
                   </span>
                   <div className="flex items-center gap-2">
                     <span className={`hidden sm:flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-lg ${dark ? 'bg-slate-800 text-slate-400' : 'bg-slate-100 text-slate-500'}`}>
