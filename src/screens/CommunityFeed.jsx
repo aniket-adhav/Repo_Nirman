@@ -15,7 +15,7 @@ const shortLoc = (loc) => loc.split(',').slice(0, 2).join(',');
 const AVATAR_COLORS   = ['#3b82f6','#8b5cf6','#06b6d4','#f59e0b','#ec4899'];
 const AVATAR_INITIALS = ['R','P','A','K','S'];
 
-const CARD_GAP = 14;    // gap between cards in px
+const CARD_GAP = 26;    // gap between cards in px
 
 /* ─── single card ─── */
 function TrendingCard({ issue, isActive, onSupport, onClick, t, cardW = 300 }) {
@@ -204,7 +204,7 @@ function TrendingCarousel({ issues, onSupport, onOpen, t }) {
         ref={containerRef}
         onMouseEnter={() => { pausedRef.current = true; }}
         onMouseLeave={() => { pausedRef.current = false; }}
-        style={{ overflow:'hidden', margin:'16px 0 12px' }}
+        style={{ overflow:'hidden', margin:'4px 0 12px' }}
       >
         {/* add vertical padding inside a non-clipping wrapper so scale has room */}
         <div style={{ padding:'30px 0 20px' }}>
