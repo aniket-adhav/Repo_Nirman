@@ -961,7 +961,7 @@ function DashboardTab({ dark, setActiveTab, stats, complaints }) {
                 <p className={`text-xs mt-1 ${dark ? 'text-emerald-300/80' : 'text-emerald-700/80'}`}>{realPct}% of analyzed</p>
               </div>
               <div className="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center">
-                <i className="fas fa-shield-check text-emerald-500 text-xl" />
+                <i className="fas fa-circle-check text-emerald-500 text-xl" />
               </div>
             </div>
             <div className={`mt-4 h-2 rounded-full overflow-hidden ${dark ? 'bg-emerald-950/40' : 'bg-white'}`}>
