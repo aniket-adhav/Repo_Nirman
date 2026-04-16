@@ -189,7 +189,7 @@ function AnimatedHero() {
             fontFamily: "'Boldonse', cursive",
             fontWeight: 400,
             fontSize: 'clamp(1.45rem, 2.6vw, 2.1rem)',
-            lineHeight: 1,
+            lineHeight: 1.3,
             letterSpacing: '0.01em',
             whiteSpace: 'nowrap',
             display: 'block',
@@ -198,7 +198,7 @@ function AnimatedHero() {
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
             margin: 0,
-            padding: '0.1em 0 0 0',
+            padding: '0.15em 0',
           }}>
             YOUR CITY. YOUR VOICE.
           </h1>
