@@ -1133,72 +1133,80 @@ function ComplaintsTab({ dark, complaints, onSelect }) {
         </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2.5">
         {filtered.map((c, i) => {
           const dept = DEPT_MAP[c.category];
+          const isReal = !c.aiAnalysis?.isSpam;
+          const deptColor = dept?.color || '#2563eb';
           return (
             <div
               key={i}
               onClick={() => onSelect(c)}
-              className={`relative group rounded-2xl border cursor-pointer overflow-hidden transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 ${card(dark)}`}
-              style={{ borderLeft: `4px solid ${priorityColor[c.priority]}` }}
+              className={`group flex items-stretch rounded-2xl border cursor-pointer overflow-hidden transition-all duration-200 hover:shadow-xl hover:-translate-y-0.5 ${dark ? 'bg-slate-900 border-slate-700/60 hover:border-slate-600' : 'bg-white border-slate-100 hover:border-slate-200 shadow-sm'}`}
             >
-              {c.image && (
-                <div className="absolute right-0 top-0 bottom-0 w-24 overflow-hidden opacity-20 group-hover:opacity-30 transition-opacity">
-                  <img src={c.image} alt="" className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-l from-transparent to-white dark:to-slate-900" />
-                </div>
-              )}
-              <div className="relative px-5 py-4 flex items-center gap-4">
-                <div className="hidden sm:flex flex-col items-center gap-1 flex-shrink-0 w-14">
-                  <span className="text-[10px] font-black text-blue-500 font-mono">{c.id}</span>
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: `${dept?.color || '#2563eb'}18` }}>
-                    <i className={`fas ${dept?.icon || 'fa-circle'} text-sm`} style={{ color: dept?.color || '#2563eb' }} />
-                  </div>
-                </div>
+              {/* Category colour accent bar */}
+              <div className="w-1 flex-shrink-0 rounded-l-2xl" style={{ background: deptColor }} />
 
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start gap-2 flex-wrap">
-                    <span className="sm:hidden text-[10px] font-black text-blue-500 font-mono">{c.id}</span>
-                    <h3 className={`text-sm font-bold leading-snug group-hover:text-blue-500 transition-colors ${dark ? 'text-slate-100' : 'text-slate-900'}`}>{c.title}</h3>
-                  </div>
-                  <div className={`flex items-center gap-3 mt-1.5 flex-wrap text-[11px] ${dark ? 'text-slate-500' : 'text-slate-400'}`}>
-                    <span className="flex items-center gap-1.5">
-                      <i className="fas fa-user text-[9px]" />{c.reporter}
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                      <i className="fas fa-location-dot text-[9px]" />
-                      {c.location.split(',').slice(0, 2).join(',')}
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                      <i className="fas fa-clock text-[9px]" />{c.date}
-                    </span>
-                  </div>
+              {/* Category icon column */}
+              <div className="hidden sm:flex flex-col items-center justify-center gap-1.5 px-4 flex-shrink-0 border-r" style={{ borderColor: dark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)' }}>
+                <div className="w-11 h-11 rounded-2xl flex items-center justify-center" style={{ background: `${deptColor}18` }}>
+                  <i className={`fas ${dept?.icon || 'fa-circle'} text-base`} style={{ color: deptColor }} />
                 </div>
+                <span className="text-[9px] font-black text-blue-400 font-mono tracking-tight">{c.id}</span>
+              </div>
 
-                <div className="flex flex-col items-end gap-2 flex-shrink-0">
-                  <span className={`text-[10px] font-bold px-3 py-1.5 rounded-full border ${statusCls(c.status, dark)}`}>{c.status}</span>
-                  <span className={`text-[10px] font-black px-2.5 py-1 rounded-full ${
-                    c.aiAnalysis?.isSpam
-                      ? (dark ? 'bg-red-900/30 text-red-300 border border-red-700' : 'bg-red-100 text-red-700 border border-red-200')
-                      : (dark ? 'bg-emerald-900/30 text-emerald-300 border border-emerald-700' : 'bg-emerald-100 text-emerald-700 border border-emerald-200')
-                  }`}>
-                    <i className={`fas ${c.aiAnalysis?.isSpam ? 'fa-triangle-exclamation' : 'fa-shield-check'} mr-1 text-[9px]`} />{c.aiAnalysis?.isSpam ? 'Fake' : 'Real'}
+              {/* Main content */}
+              <div className="flex-1 min-w-0 px-4 py-3.5 flex flex-col justify-center gap-1.5">
+                <h3 className={`text-sm font-bold leading-snug group-hover:text-blue-500 transition-colors line-clamp-1 ${dark ? 'text-slate-100' : 'text-slate-900'}`}>{c.title}</h3>
+                <div className={`flex items-center gap-3 flex-wrap text-[11px] font-medium ${dark ? 'text-slate-500' : 'text-slate-400'}`}>
+                  <span className="flex items-center gap-1.5">
+                    <i className="fas fa-user text-[9px]" />{c.reporter}
                   </span>
-                  <div className="flex items-center gap-2">
-                    <span className={`hidden sm:flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-lg ${dark ? 'bg-slate-800 text-slate-400' : 'bg-slate-100 text-slate-500'}`}>
-                      <i className={`fas ${dept?.icon || 'fa-circle'} text-[9px]`} style={{ color: dept?.color }} />{c.category}
-                    </span>
-                    <span className="flex items-center gap-1 text-[10px] font-bold" style={{ color: priorityColor[c.priority] }}>
-                      <span className="w-1.5 h-1.5 rounded-full" style={{ background: priorityColor[c.priority] }} />{c.priority}
-                    </span>
-                  </div>
+                  <span className="hidden sm:flex items-center gap-1.5">
+                    <i className="fas fa-location-dot text-[9px]" />{c.location.split(',').slice(0, 2).join(',')}
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <i className="fas fa-clock text-[9px]" />{c.date}
+                  </span>
                 </div>
-
-                <div className={`hidden sm:flex w-8 h-8 rounded-xl items-center justify-center flex-shrink-0 transition-all opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 ${dark ? 'bg-blue-500/20 text-blue-400' : 'bg-blue-50 text-blue-500'}`}>
-                  <i className="fas fa-chevron-right text-xs" />
+                {/* Category chip — mobile */}
+                <div className="sm:hidden">
+                  <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md" style={{ background: `${deptColor}15`, color: deptColor }}>
+                    <i className={`fas ${dept?.icon || 'fa-circle'} text-[8px]`} />{c.category}
+                  </span>
                 </div>
               </div>
+
+              {/* Right badges column */}
+              <div className="flex flex-col items-end justify-center gap-2 px-4 py-3.5 flex-shrink-0">
+                {/* Status */}
+                <span className={`text-[10px] font-bold px-3 py-1.5 rounded-full border whitespace-nowrap ${statusCls(c.status, dark)}`}>{c.status}</span>
+                {/* Real / Fake */}
+                <span className={`inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-1 rounded-full border whitespace-nowrap ${
+                  isReal
+                    ? (dark ? 'bg-emerald-900/30 text-emerald-300 border-emerald-700' : 'bg-emerald-50 text-emerald-700 border-emerald-200')
+                    : (dark ? 'bg-red-900/30 text-red-300 border-red-700' : 'bg-red-50 text-red-700 border-red-200')
+                }`}>
+                  <i className={`fas ${isReal ? 'fa-circle-check' : 'fa-triangle-exclamation'} text-[9px]`} />
+                  {isReal ? 'Real' : 'Fake'}
+                </span>
+                {/* Category chip — desktop */}
+                <span className="hidden sm:inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-lg whitespace-nowrap" style={{ background: `${deptColor}14`, color: deptColor }}>
+                  <i className={`fas ${dept?.icon || 'fa-circle'} text-[8px]`} />{c.category}
+                </span>
+              </div>
+
+              {/* Photo thumbnail */}
+              {c.image ? (
+                <div className="hidden sm:block w-20 flex-shrink-0 overflow-hidden relative">
+                  <img src={c.image} alt="" className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                  <div className="absolute inset-0" style={{ background: dark ? 'linear-gradient(to right, rgba(15,23,42,0.35), transparent)' : 'linear-gradient(to right, rgba(255,255,255,0.2), transparent)' }} />
+                </div>
+              ) : (
+                <div className="hidden sm:flex w-14 flex-shrink-0 items-center justify-center" style={{ background: `${deptColor}08` }}>
+                  <i className="fas fa-chevron-right text-xs opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: deptColor }} />
+                </div>
+              )}
             </div>
           );
         })}
