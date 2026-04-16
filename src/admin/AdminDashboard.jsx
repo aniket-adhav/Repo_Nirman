@@ -1237,7 +1237,7 @@ function AnalysisTab({ dark, analysisData, complaints, onSelectComplaint }) {
   const catBreakdown = analysisData?.categoryBreakdown ?? [];
   const catTotal = catBreakdown.reduce((s, c) => s + c.count, 0) || 1;
 
-  const hotspots = analysisData?.hotspots?.length ? analysisData.hotspots : HOTSPOTS;
+  const hotspots = HOTSPOTS;
   const sortedHotspots = [...hotspots].sort((a, b) => b.issues - a.issues);
   const actionQueue = analysisData?.actionQueue ?? [];
 
