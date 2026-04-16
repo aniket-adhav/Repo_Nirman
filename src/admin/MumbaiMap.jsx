@@ -57,7 +57,7 @@ export default function MumbaiMap({ hotspots = HOTSPOTS, fullscreen = false, onF
             <Circle
               key={spot.name}
               center={[spot.lat, spot.lng]}
-              radius={900 + spot.issues * 85}
+              radius={spot.issues >= 90 ? 3800 : spot.issues >= 55 ? 2800 : spot.issues >= 30 ? 1900 : 1200}
               pathOptions={{ color, fillColor: color, fillOpacity: isCritical ? 0.48 : 0.35, weight: isCritical ? 3 : 2 }}
             >
               <Tooltip permanent={isCritical} direction="top" offset={[0, -8]}>
