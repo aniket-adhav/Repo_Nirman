@@ -239,54 +239,28 @@ function ComplaintDetail({ complaint, dark, onClose, onStatusChange, onAssign, o
             )}
           </div>
 
-          {/* Reporter Info — compact single row */}
-          <div className={`rounded-2xl border shadow-sm overflow-hidden ${card(dark)}`}>
-            <div className="flex items-center divide-x" style={{ divideColor: dark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)' }}>
-              {/* Name */}
-              <div className="flex items-center gap-2.5 px-4 py-3.5 flex-1 min-w-0">
-                <div className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 ${dark ? 'bg-blue-500/15' : 'bg-blue-50'}`}>
-                  <i className="fas fa-user text-blue-500 text-xs" />
+          {/* Reporter Info — always visible */}
+          <div className={`rounded-2xl border p-5 shadow-sm ${card(dark)}`}>
+            <p className={`text-[10px] font-black uppercase tracking-widest mb-3 ${dark ? 'text-slate-500' : 'text-slate-400'}`}>Reporter Information</p>
+            <div className="grid grid-cols-3 gap-3 mb-4">
+              {[
+                { icon: 'fa-user', label: 'Name', value: complaint.reporter },
+                { icon: 'fa-phone', label: 'Phone', value: complaint.phone },
+                { icon: 'fa-calendar', label: 'Filed', value: complaint.date },
+              ].map((p, i) => (
+                <div key={i} className={`rounded-xl p-3 ${dark ? 'bg-slate-800 border border-slate-700' : 'bg-slate-50 border border-slate-100'}`}>
+                  <i className={`fas ${p.icon} text-blue-500 mb-1.5 block text-xs`} />
+                  <p className={`text-[9px] font-black uppercase tracking-widest ${dark ? 'text-slate-500' : 'text-slate-400'}`}>{p.label}</p>
+                  <p className={`text-xs font-bold mt-0.5 truncate ${dark ? 'text-slate-200' : 'text-slate-800'}`}>{p.value || '—'}</p>
                 </div>
-                <div className="min-w-0">
-                  <p className={`text-[9px] font-black uppercase tracking-widest ${dark ? 'text-slate-500' : 'text-slate-400'}`}>Reporter</p>
-                  <p className={`text-xs font-bold truncate ${dark ? 'text-slate-200' : 'text-slate-800'}`}>{complaint.reporter || '—'}</p>
-                </div>
-              </div>
-              {/* Divider */}
-              <div className={`w-px self-stretch ${dark ? 'bg-slate-700' : 'bg-slate-100'}`} />
-              {/* Phone */}
-              <div className="flex items-center gap-2.5 px-4 py-3.5 flex-1 min-w-0">
-                <div className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 ${dark ? 'bg-emerald-500/15' : 'bg-emerald-50'}`}>
-                  <i className="fas fa-phone text-emerald-500 text-xs" />
-                </div>
-                <div className="min-w-0">
-                  <p className={`text-[9px] font-black uppercase tracking-widest ${dark ? 'text-slate-500' : 'text-slate-400'}`}>Phone</p>
-                  <p className={`text-xs font-bold truncate ${dark ? 'text-slate-200' : 'text-slate-800'}`}>{complaint.phone || '—'}</p>
-                </div>
-              </div>
-              {/* Divider */}
-              <div className={`w-px self-stretch ${dark ? 'bg-slate-700' : 'bg-slate-100'}`} />
-              {/* Filed */}
-              <div className="flex items-center gap-2.5 px-4 py-3.5 flex-shrink-0">
-                <div className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 ${dark ? 'bg-violet-500/15' : 'bg-violet-50'}`}>
-                  <i className="fas fa-clock text-violet-500 text-xs" />
-                </div>
-                <div>
-                  <p className={`text-[9px] font-black uppercase tracking-widest ${dark ? 'text-slate-500' : 'text-slate-400'}`}>Filed</p>
-                  <p className={`text-xs font-bold ${dark ? 'text-slate-200' : 'text-slate-800'}`}>{complaint.date || '—'}</p>
-                </div>
-              </div>
-              {/* Divider */}
-              <div className={`w-px self-stretch ${dark ? 'bg-slate-700' : 'bg-slate-100'}`} />
-              {/* Call button inline */}
-              <a href={`tel:${complaint.phone}`}
-                className={`flex items-center gap-2 px-4 py-3.5 flex-shrink-0 text-white text-xs font-black active:scale-95 transition-all ${
-                  isSpam ? 'bg-gradient-to-br from-red-500 to-red-600' : 'bg-gradient-to-br from-blue-500 to-violet-600'
-                }`}>
-                <i className="fas fa-phone text-sm" />
-                <span className="hidden sm:block whitespace-nowrap">{isSpam ? 'Inquire' : 'Call'}</span>
-              </a>
+              ))}
             </div>
+            <a href={`tel:${complaint.phone}`}
+              className={`flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-white text-xs font-black shadow-sm active:scale-95 transition-all ${
+                isSpam ? 'bg-gradient-to-r from-red-500 to-red-600' : 'bg-gradient-to-r from-blue-500 to-violet-600'
+              }`}>
+              <i className="fas fa-phone" />{isSpam ? 'Call Reporter for Inquiry' : 'Call Reporter'}
+            </a>
           </div>
         </div>
 
