@@ -163,6 +163,54 @@ function ComplaintDetail({ complaint, dark, onClose, onStatusChange, onAssign, o
         </div>
       </section>
 
+      {/* ── Status Progress Tracker ── */}
+      {!isSpam && (() => {
+        const stages = [
+          { label: 'Pending',     icon: 'fa-clock',         color: '#d97706', bg: '#fef3c7' },
+          { label: 'In Progress', icon: 'fa-arrows-rotate', color: '#2563eb', bg: '#dbeafe' },
+          { label: 'Resolved',    icon: 'fa-circle-check',  color: '#059669', bg: '#d1fae5' },
+        ];
+        const activeIdx = stages.findIndex(s => s.label === complaint.status);
+        return (
+          <div className={`rounded-2xl border px-6 py-5 shadow-sm ${card(dark)}`}>
+            <p className={`text-[10px] font-black uppercase tracking-widest mb-4 ${dark ? 'text-slate-500' : 'text-slate-400'}`}>Complaint Progress</p>
+            <div className="flex items-center gap-0">
+              {stages.map((stage, i) => {
+                const done = i <= activeIdx;
+                const active = i === activeIdx;
+                return (
+                  <div key={stage.label} className="flex items-center flex-1">
+                    <div className="flex flex-col items-center gap-2 flex-shrink-0">
+                      <div className="w-10 h-10 rounded-full flex items-center justify-center transition-all"
+                        style={{
+                          background: done ? stage.color : dark ? '#1e293b' : '#f1f5f9',
+                          boxShadow: active ? `0 0 0 4px ${stage.color}30` : 'none',
+                          border: done ? 'none' : `2px solid ${dark ? '#334155' : '#e2e8f0'}`,
+                        }}>
+                        <i className={`fas ${stage.icon} text-xs`} style={{ color: done ? '#fff' : dark ? '#475569' : '#94a3b8' }} />
+                      </div>
+                      <div className="text-center">
+                        <p className={`text-[10px] font-black ${active ? '' : done ? '' : dark ? 'text-slate-600' : 'text-slate-400'}`}
+                          style={{ color: done ? stage.color : undefined }}>
+                          {stage.label}
+                        </p>
+                        {active && (
+                          <p className={`text-[9px] font-semibold mt-0.5 ${dark ? 'text-slate-500' : 'text-slate-400'}`}>Current</p>
+                        )}
+                      </div>
+                    </div>
+                    {i < stages.length - 1 && (
+                      <div className="flex-1 h-0.5 mx-2 mb-5 rounded-full"
+                        style={{ background: i < activeIdx ? stage.color : dark ? '#1e293b' : '#e2e8f0' }} />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })()}
+
       {/* ── Main Grid ── */}
       <div className="grid items-start gap-5 xl:grid-cols-2">
 
@@ -414,20 +462,33 @@ function ComplaintDetail({ complaint, dark, onClose, onStatusChange, onAssign, o
               <div className="grid grid-cols-3 gap-2">
                 {[
                   { label: 'Pending',     icon: 'fa-clock',         color: '#d97706', shadow: 'shadow-amber-200',  grad: 'from-amber-400 to-amber-500' },
-                  { label: 'In Progress', icon: 'fa-arrows-rotate', color: '#2563eb', shadow: 'shadow-blue-200',   grad: 'from-blue-500 to-blue-600' },
+                  { label: 'In Progress', icon: 'fa-arrows-rotate', color: '#2563eb', shadow: 'shadow-blue-200',   grad: 'from-blue-500 to-blue-600', needsAssign: true },
                   { label: 'Resolved',    icon: 'fa-circle-check',  color: '#059669', shadow: 'shadow-green-200',  grad: 'from-emerald-500 to-emerald-600' },
                 ].map(s => {
                   const isActive = complaint.status === s.label;
                   return (
                     <button key={s.label} disabled={isActive}
-                      onClick={() => askConfirm({
-                        title: 'Update Status?',
-                        message: `Change status from "${complaint.status}" to "${s.label}"?`,
-                        confirmText: `Set ${s.label}`,
-                        icon: s.icon,
-                        color: s.color,
-                        onConfirm: () => onStatusChange(complaint._id, s.label),
-                      })}
+                      onClick={() => {
+                        if (s.needsAssign && !isAssigned) {
+                          askConfirm({
+                            title: 'Assign Department First',
+                            message: 'Please assign this complaint to a department before marking it as "In Progress". Use the Department Assignment section above.',
+                            confirmText: 'Got it',
+                            icon: 'fa-triangle-exclamation',
+                            color: '#d97706',
+                            onConfirm: () => {},
+                          });
+                          return;
+                        }
+                        askConfirm({
+                          title: 'Update Status?',
+                          message: `Change status from "${complaint.status}" to "${s.label}"?`,
+                          confirmText: `Set ${s.label}`,
+                          icon: s.icon,
+                          color: s.color,
+                          onConfirm: () => onStatusChange(complaint._id, s.label),
+                        });
+                      }}
                       className={`flex flex-col items-center gap-2 py-4 rounded-xl border-2 text-xs font-black transition-all active:scale-95 ${
                         isActive
                           ? `bg-gradient-to-br ${s.grad} text-white border-transparent shadow-lg ${s.shadow}`
