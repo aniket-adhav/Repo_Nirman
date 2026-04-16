@@ -365,21 +365,32 @@ export default function LoginPage() {
 
   return (
     <div className="h-screen flex overflow-hidden">
-      <div className="hidden lg:flex w-[45%] flex-col relative overflow-hidden"
-        style={{ background: 'linear-gradient(160deg, #0c1628 0%, #0e1e35 35%, #101f38 65%, #0d1b30 100%)' }}>
+      <div className="hidden lg:flex w-[42%] flex-col relative overflow-hidden"
+        style={{ background: 'linear-gradient(155deg, #06101e 0%, #0b1a34 22%, #0e2248 45%, #122a58 65%, #0d1f3c 82%, #080f1c 100%)' }}>
 
         {/* Background effects */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(59,130,246,0.5), transparent)' }} />
-          <div className="absolute -top-40 -left-20 w-[420px] h-[420px] rounded-full blur-3xl" style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.09) 0%, transparent 70%)' }} />
-          <div className="absolute bottom-10 right-0 w-72 h-72 rounded-full blur-3xl" style={{ background: 'radial-gradient(circle, rgba(20,184,166,0.07) 0%, transparent 70%)' }} />
-          <div className="absolute inset-0 opacity-[0.02]"
-            style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, #60a5fa 1px, transparent 0)', backgroundSize: '30px 30px' }} />
-          <div className="absolute bottom-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(59,130,246,0.2), transparent)' }} />
+          {/* Top edge shimmer */}
+          <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(148,163,184,0.6), rgba(59,130,246,0.5), transparent)' }} />
+          {/* Pearl white glow — upper right */}
+          <div className="absolute -top-24 right-[-60px] w-[340px] h-[340px] rounded-full blur-3xl" style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.055) 0%, rgba(147,197,253,0.07) 45%, transparent 75%)' }} />
+          {/* Rich blue glow — upper left */}
+          <div className="absolute -top-20 -left-10 w-[300px] h-[300px] rounded-full blur-3xl" style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.13) 0%, transparent 70%)' }} />
+          {/* Center pearl shimmer */}
+          <div className="absolute top-[35%] left-[20%] w-[260px] h-[260px] rounded-full blur-3xl" style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.03) 0%, rgba(96,165,250,0.06) 50%, transparent 80%)' }} />
+          {/* Teal glow — bottom */}
+          <div className="absolute bottom-8 right-0 w-72 h-72 rounded-full blur-3xl" style={{ background: 'radial-gradient(circle, rgba(20,184,166,0.09) 0%, transparent 70%)' }} />
+          {/* Subtle dot grid */}
+          <div className="absolute inset-0 opacity-[0.025]"
+            style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, #93c5fd 1px, transparent 0)', backgroundSize: '28px 28px' }} />
+          {/* Diagonal light streak */}
+          <div className="absolute top-0 right-[30%] w-px h-full opacity-10" style={{ background: 'linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.5) 30%, rgba(148,163,184,0.3) 70%, transparent 100%)' }} />
+          {/* Bottom edge shimmer */}
+          <div className="absolute bottom-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(59,130,246,0.35), rgba(255,255,255,0.15), transparent)' }} />
         </div>
 
         {/* Logo */}
-        <div className="relative z-10 px-9 pt-7">
+        <div className="relative z-10 pl-12 pr-7 pt-7">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
               style={{ background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)', boxShadow: '0 4px 14px rgba(59,130,246,0.35)' }}>
@@ -412,7 +423,7 @@ export default function LoginPage() {
         </div>
 
         {/* Main content */}
-        <div className="relative z-10 flex-1 flex flex-col pt-5 px-9 pb-6">
+        <div className="relative z-10 flex-1 flex flex-col pt-5 pl-12 pr-7 pb-6">
           <div className="flex flex-col gap-5">
             <AnimatedHero />
 
