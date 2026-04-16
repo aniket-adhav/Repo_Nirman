@@ -751,7 +751,7 @@ export default function AdminDashboard() {
             />
           ) : (
             <>
-              {activeTab === 'dashboard'   && <DashboardTab dark={dark} setActiveTab={setTab} stats={stats} complaints={complaints} />}
+              {activeTab === 'dashboard'   && (loadingData ? <DashboardSkeleton dark={dark} /> : <DashboardTab dark={dark} setActiveTab={setTab} stats={stats} complaints={complaints} />)}
               {activeTab === 'complaints'  && <ComplaintsTab dark={dark} complaints={complaints} onSelect={setSelectedComplaint} />}
               {activeTab === 'analysis'    && (
                 <AnalysisTab
@@ -790,6 +790,116 @@ export default function AdminDashboard() {
         </nav>
       </div>
 
+    </div>
+  );
+}
+
+function Bone({ dark, className = '' }) {
+  return (
+    <div className={`rounded-xl animate-pulse ${dark ? 'bg-slate-700/60' : 'bg-slate-200'} ${className}`} />
+  );
+}
+
+function DashboardSkeleton({ dark }) {
+  const c = dark ? 'bg-[#1e293b] border-slate-700' : 'bg-white border-slate-100';
+  return (
+    <div className="space-y-6">
+      {/* 4 stat cards */}
+      <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className={`rounded-2xl border p-5 shadow-sm ${c}`}>
+            <div className="flex items-center justify-between mb-4">
+              <Bone dark={dark} className="w-10 h-10 rounded-xl" />
+              <Bone dark={dark} className="w-16 h-6 rounded-full" />
+            </div>
+            <Bone dark={dark} className="w-20 h-8 mb-2" />
+            <Bone dark={dark} className="w-28 h-3" />
+            <Bone dark={dark} className="w-20 h-2.5 mt-1" />
+          </div>
+        ))}
+      </div>
+
+      {/* AI classification */}
+      <div className={`rounded-2xl border p-6 shadow-sm ${c}`}>
+        <Bone dark={dark} className="w-48 h-4 mb-1" />
+        <Bone dark={dark} className="w-64 h-3 mb-5" />
+        <div className="grid md:grid-cols-2 gap-4">
+          {[...Array(2)].map((_, i) => (
+            <div key={i} className={`rounded-2xl border p-5 ${dark ? 'border-slate-700' : 'border-slate-100'}`}>
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <Bone dark={dark} className="w-28 h-3 mb-2" />
+                  <Bone dark={dark} className="w-16 h-8 mb-1" />
+                  <Bone dark={dark} className="w-24 h-2.5" />
+                </div>
+                <Bone dark={dark} className="w-12 h-12 rounded-xl" />
+              </div>
+              <Bone dark={dark} className="w-full h-2 rounded-full" />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Trends + Resolution */}
+      <div className="grid lg:grid-cols-3 gap-5">
+        <div className={`lg:col-span-2 rounded-2xl border p-6 shadow-sm ${c}`}>
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <Bone dark={dark} className="w-36 h-4 mb-1.5" />
+              <Bone dark={dark} className="w-44 h-3" />
+            </div>
+            <Bone dark={dark} className="w-14 h-7 rounded-lg" />
+          </div>
+          <div className="flex items-end gap-3 h-36">
+            {[65, 45, 80, 55, 70, 40].map((h, i) => (
+              <div key={i} className="flex-1 flex flex-col items-center gap-2">
+                <Bone dark={dark} className="w-5 h-3 rounded" />
+                <Bone dark={dark} className="w-full rounded-t-xl" style={{ height: `${h}%` }} />
+                <Bone dark={dark} className="w-10 h-2.5 rounded" />
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className={`rounded-2xl border p-6 shadow-sm ${c}`}>
+          <Bone dark={dark} className="w-36 h-4 mb-1.5" />
+          <Bone dark={dark} className="w-44 h-3 mb-6" />
+          <div className="space-y-5">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="flex items-center gap-4">
+                <Bone dark={dark} className="w-16 h-16 rounded-full flex-shrink-0" />
+                <div className="flex-1">
+                  <Bone dark={dark} className="w-24 h-3.5 mb-1.5" />
+                  <Bone dark={dark} className="w-16 h-2.5" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Categories + Recent Activity */}
+      <div className="grid lg:grid-cols-2 gap-5">
+        {[...Array(2)].map((_, col) => (
+          <div key={col} className={`rounded-2xl border p-6 shadow-sm ${c}`}>
+            <div className="flex items-center justify-between mb-5">
+              <div>
+                <Bone dark={dark} className="w-36 h-4 mb-1.5" />
+                <Bone dark={dark} className="w-44 h-3" />
+              </div>
+              <Bone dark={dark} className="w-14 h-5 rounded-lg" />
+            </div>
+            <div className="space-y-4">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <Bone dark={dark} className="w-4 h-3 rounded" />
+                  <Bone dark={dark} className={`h-3 rounded flex-1`} style={{ width: `${70 - i * 12}%` }} />
+                  <Bone dark={dark} className="w-8 h-2.5 rounded ml-auto" />
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
