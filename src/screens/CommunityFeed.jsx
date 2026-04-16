@@ -361,6 +361,7 @@ export default function CommunityFeed() {
     .map(c => ({ ...c, label: categoryLabel(c.id) }));
   const allFilters = [
     { id: 'all', label: 'All', icon: 'fa-fire' },
+    { id: 'myarea', label: 'My Area', icon: 'fa-location-dot', special: true },
     ...categoryFilters,
   ];
 
