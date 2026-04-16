@@ -71,10 +71,10 @@ function TrendingCard({ issue, isActive, onSupport, onClick, t, cardW = 300 }) {
 
         {/* title + location */}
         <div style={{ position:'absolute', bottom:10, left:12, right:12 }}>
-          <p style={{ color:'#fff', fontWeight:700, fontSize:13, lineHeight:1.3, margin:0, display:'-webkit-box', WebkitLineClamp:2, WebkitBoxOrient:'vertical', overflow:'hidden' }}>
+          <p style={{ color:'#fff', fontWeight:800, fontSize:13, lineHeight:1.35, margin:0, display:'-webkit-box', WebkitLineClamp:2, WebkitBoxOrient:'vertical', overflow:'hidden', textShadow:'0 1px 4px rgba(0,0,0,0.5)' }}>
             {issue.title}
           </p>
-          <p style={{ color:'rgba(255,255,255,0.62)', fontSize:10, marginTop:3, display:'flex', alignItems:'center', gap:4 }}>
+          <p style={{ color:'rgba(255,255,255,0.75)', fontSize:10, marginTop:3, display:'flex', alignItems:'center', gap:4 }}>
             <i className="fas fa-location-dot" style={{ color:'#93c5fd', fontSize:9 }} />
             {shortLoc(issue.location)}
           </p>
