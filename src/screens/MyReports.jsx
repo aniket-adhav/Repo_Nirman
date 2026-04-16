@@ -55,9 +55,11 @@ function MyReportsSkeleton() {
 }
 
 const STATUS_STYLES = {
-  open: 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400',
+  pending: 'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400',
+  open:    'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400',
   inprogress: 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400',
   resolved: 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400',
+  fake: 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400',
 };
 
 export default function MyReports() {
@@ -69,7 +71,11 @@ export default function MyReports() {
   if (loadingIssues && issues.length === 0) return <MyReportsSkeleton />;
 
   const myIssues = issues.filter(i => i.reporter.userId === currentUser?.id);
-  const filtered = filter === 'all' ? myIssues : myIssues.filter(i => i.status === filter);
+  const fakeIssues = myIssues.filter(i => i.aiAnalysis?.isSpam === true);
+  const hasFake = fakeIssues.length > 0;
+  const filtered = filter === 'all' ? myIssues
+    : filter === 'fake' ? fakeIssues
+    : myIssues.filter(i => i.status === filter);
 
   const openIssue = (issue) => navigateTo('issueDetail', issue);
 
@@ -97,21 +103,32 @@ export default function MyReports() {
         </button>
       </div>
 
-      <div className="flex gap-2 mb-4 overflow-x-auto pb-1">
+      <div className="flex gap-2 mb-4 overflow-x-auto pb-1 scrollbar-none">
         {[
-          { key: 'all', label: statusLabel('all'), count: myIssues.length },
-          { key: 'open', label: statusLabel('open'), count: myIssues.filter(i => i.status === 'open').length },
-          { key: 'inprogress', label: statusLabel('inprogress'), count: myIssues.filter(i => i.status === 'inprogress').length },
-          { key: 'resolved', label: statusLabel('resolved'), count: myIssues.filter(i => i.status === 'resolved').length },
+          { key: 'all',        label: 'All',         count: myIssues.length },
+          { key: 'pending',    label: 'Pending',      count: myIssues.filter(i => i.status === 'pending').length },
+          { key: 'inprogress', label: 'In Progress',  count: myIssues.filter(i => i.status === 'inprogress').length },
+          { key: 'resolved',   label: 'Resolved',     count: myIssues.filter(i => i.status === 'resolved').length },
+          ...(hasFake ? [{ key: 'fake', label: 'Fake', count: fakeIssues.length, isFake: true }] : []),
         ].map(f => (
           <button
             key={f.key}
             onClick={() => setFilter(f.key)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap border transition-all flex-shrink-0 ${filter === f.key ? 'border-transparent text-primary-foreground' : 'border-border bg-card text-muted-foreground hover:border-primary/30'}`}
-            style={filter === f.key ? { background: 'var(--gradient-primary)' } : {}}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap border transition-all flex-shrink-0 ${
+              filter === f.key
+                ? f.isFake ? 'border-transparent text-white bg-red-500' : 'border-transparent text-primary-foreground'
+                : f.isFake ? 'border-red-300 bg-red-50 text-red-600 dark:bg-red-900/20 dark:border-red-700 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30'
+                : 'border-border bg-card text-muted-foreground hover:border-primary/30'
+            }`}
+            style={filter === f.key && !f.isFake ? { background: 'var(--gradient-primary)' } : {}}
           >
+            {f.isFake && <i className="fas fa-triangle-exclamation text-[10px]" />}
             {f.label}
-            {f.count > 0 && <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-black ${filter === f.key ? 'bg-white/25' : 'bg-secondary'}`}>{f.count}</span>}
+            {f.count > 0 && (
+              <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-black ${
+                filter === f.key ? 'bg-white/25' : f.isFake ? 'bg-red-100 text-red-600 dark:bg-red-900/40' : 'bg-secondary'
+              }`}>{f.count}</span>
+            )}
           </button>
         ))}
       </div>
@@ -122,10 +139,10 @@ export default function MyReports() {
             <i className="fas fa-file-lines" />
           </div>
           <h3 className="text-base font-bold text-foreground">
-            {filter === 'all' ? t('myReports.noReports') : tf('myReports.noStatusReports', { status: statusLabel(filter).toLowerCase() })}
+            {filter === 'all' ? t('myReports.noReports') : filter === 'fake' ? 'No fake reports' : tf('myReports.noStatusReports', { status: filter })}
           </h3>
           <p className="text-sm text-muted-foreground mt-1">
-            {filter === 'all' ? t('myReports.issuesAppearHere') : t('myReports.tryDifferentFilter')}
+            {filter === 'all' ? t('myReports.issuesAppearHere') : filter === 'fake' ? 'None of your reports have been flagged as fake.' : t('myReports.tryDifferentFilter')}
           </p>
           {filter === 'all' && (
             <button
@@ -157,9 +174,15 @@ export default function MyReports() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2">
                   <h3 className="text-sm font-bold text-foreground truncate group-hover:text-primary transition-colors">{issue.title}</h3>
-                  <span className={`badge text-[10px] font-bold flex-shrink-0 ${STATUS_STYLES[issue.status] || STATUS_STYLES.open}`}>
-                    {statusLabel(issue.status || 'open')}
-                  </span>
+                  {filter === 'fake' || issue.aiAnalysis?.isSpam ? (
+                    <span className={`badge text-[10px] font-bold flex-shrink-0 ${STATUS_STYLES.fake}`}>
+                      <i className="fas fa-triangle-exclamation mr-1" />Fake
+                    </span>
+                  ) : (
+                    <span className={`badge text-[10px] font-bold flex-shrink-0 ${STATUS_STYLES[issue.status] || STATUS_STYLES.pending}`}>
+                      {statusLabel(issue.status || 'pending')}
+                    </span>
+                  )}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1 truncate">
                   <i className="fas fa-location-dot mr-1" />{issue.location}
