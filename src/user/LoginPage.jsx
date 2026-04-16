@@ -365,7 +365,7 @@ export default function LoginPage() {
 
   return (
     <div className="h-screen flex overflow-hidden">
-      <div className="hidden lg:flex w-[42%] flex-col relative overflow-hidden"
+      <div className="hidden lg:flex w-[58%] flex-col relative overflow-hidden"
         style={{ background: 'linear-gradient(155deg, #06101e 0%, #0b1a34 22%, #0e2248 45%, #122a58 65%, #0d1f3c 82%, #080f1c 100%)' }}>
 
         {/* Background effects */}
