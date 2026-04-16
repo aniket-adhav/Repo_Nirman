@@ -181,7 +181,7 @@ function AnimatedHero() {
           display: 'inline-block',
           background: 'linear-gradient(120deg, rgba(255,255,255,0.06) 0%, rgba(147,197,253,0.10) 50%, rgba(96,165,250,0.07) 100%)',
           borderRadius: '10px',
-          padding: '10px 18px 14px 14px',
+          padding: '12px 18px',
           border: '1px solid rgba(147,197,253,0.12)',
           overflow: 'visible',
         }}>
@@ -189,7 +189,7 @@ function AnimatedHero() {
             fontFamily: "'Boldonse', cursive",
             fontWeight: 400,
             fontSize: 'clamp(1.45rem, 2.6vw, 2.1rem)',
-            lineHeight: 1.3,
+            lineHeight: 1,
             letterSpacing: '0.01em',
             whiteSpace: 'nowrap',
             display: 'block',
@@ -198,7 +198,7 @@ function AnimatedHero() {
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
             margin: 0,
-            padding: '0.15em 0',
+            padding: '0.12em 0',
           }}>
             YOUR CITY. YOUR VOICE.
           </h1>
