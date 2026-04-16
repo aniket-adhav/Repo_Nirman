@@ -1213,7 +1213,7 @@ function ComplaintsTab({ dark, complaints, onSelect }) {
                 <div className="w-11 h-11 rounded-2xl flex items-center justify-center" style={{ background: `${deptColor}18` }}>
                   <i className={`fas ${dept?.icon || 'fa-circle'} text-base`} style={{ color: deptColor }} />
                 </div>
-                <span className="text-[9px] font-black text-blue-400 font-mono tracking-tight">{c.id}</span>
+                <span style={{ fontFamily: "'Courier New', 'Courier', monospace", fontSize: '0.65rem', fontWeight: 500, color: '#94a3b8', letterSpacing: '0.04em' }}>{c.id}</span>
               </div>
 
               {/* Main content */}
