@@ -1217,6 +1217,7 @@ function ComplaintsTab({ dark, complaints, onSelect }) {
 }
 
 function AnalysisTab({ dark, analysisData, complaints, onSelectComplaint }) {
+  const [mapFullscreen, setMapFullscreen] = useState(false);
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
   const resolved = [30, 45, 60, 40, 70, 55];
   const pending = [20, 35, 25, 50, 30, 45];
@@ -1249,198 +1250,228 @@ function AnalysisTab({ dark, analysisData, complaints, onSelectComplaint }) {
     { icon: 'fa-chart-line', color: '#0891b2', bg: '#ecfeff', title: 'Trend: Declining Pending', desc: 'Auto-assignment + overdue alerts can reduce pending volume significantly across wards.' },
   ];
 
-  return (
-    <div className="space-y-5">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {[
-          { label: 'Avg Resolution', value: avgDays === 'N/A' ? 'N/A' : `${avgDays} days`, icon: 'fa-stopwatch', color: '#2563eb', bg: '#eff6ff' },
-          { label: 'Resolution Rate', value: satisfaction, icon: 'fa-star', color: '#d97706', bg: '#fffbeb' },
-          { label: 'Peak Category', value: peakCat, icon: 'fa-trash', color: '#7c3aed', bg: '#f5f3ff' },
-          { label: 'Response Rate', value: responseRate, icon: 'fa-reply', color: '#059669', bg: '#ecfdf5' },
-        ].map((s, i) => (
-          <div key={i} className={`rounded-2xl border p-5 shadow-sm hover:shadow-md transition-all ${card(dark)}`}>
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4" style={{ background: dark ? `${s.color}20` : s.bg }}>
-              <i className={`fas ${s.icon} text-base`} style={{ color: s.color }} />
-            </div>
-            <div className={`text-2xl font-black ${dark ? 'text-white' : 'text-slate-900'}`}>{s.value}</div>
-            <div className={`text-xs font-semibold mt-1 ${dark ? 'text-slate-400' : 'text-slate-400'}`}>{s.label}</div>
-          </div>
-        ))}
-      </div>
-
-      <div className={`rounded-2xl border shadow-sm overflow-hidden ${card(dark)}`}>
-        <div className={`flex items-center justify-between px-6 py-4 border-b ${dark ? 'border-slate-700' : 'border-slate-100'}`}>
-          <div>
-            <h3 className={`text-sm font-black ${dark ? 'text-white' : 'text-slate-900'}`}>Mumbai Complaint Heatmap</h3>
-            <p className={`text-xs mt-0.5 ${dark ? 'text-slate-400' : 'text-slate-400'}`}>Live issue density by area — click circles to see details</p>
-          </div>
+  const mapCard = (
+    <div className={`rounded-2xl border shadow-sm overflow-hidden ${card(dark)}`}>
+      <div className={`flex items-center justify-between px-6 py-4 border-b ${dark ? 'border-slate-700' : 'border-slate-100'}`}>
+        <div>
+          <h3 className={`text-sm font-black ${dark ? 'text-white' : 'text-slate-900'}`}>Mumbai Complaint Heatmap</h3>
+          <p className={`text-xs mt-0.5 ${dark ? 'text-slate-400' : 'text-slate-400'}`}>Live issue density by area — scroll to zoom, hover for details</p>
+        </div>
+        <div className="flex items-center gap-2">
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold" style={{ background: '#eff6ff', color: '#2563eb' }}>
             <i className="fas fa-location-dot text-[10px]" />Mumbai, MH
           </div>
         </div>
-        <div className="p-4">
-          <MumbaiMap hotspots={hotspots} />
-        </div>
       </div>
-
-      <div className={`rounded-2xl border shadow-sm overflow-hidden ${card(dark)}`}>
-        <div className={`flex items-center justify-between px-6 py-4 border-b ${dark ? 'border-slate-700' : 'border-slate-100'}`}>
-          <div>
-            <h3 className={`text-sm font-black ${dark ? 'text-white' : 'text-slate-900'}`}>Top 10 Actions Today</h3>
-            <p className={`text-xs mt-0.5 ${dark ? 'text-slate-400' : 'text-slate-400'}`}>Auto-prioritized: unassigned, overdue, high-support, fast wins</p>
-          </div>
-          <span className={`text-xs font-bold px-3 py-1 rounded-xl ${dark ? 'bg-slate-800 text-slate-400' : 'bg-slate-100 text-slate-500'}`}>
-            {actionQueue.length}/10
-          </span>
-        </div>
-        <div className={`${dark ? 'divide-slate-800' : 'divide-slate-100'} divide-y`}>
-          {actionQueue.length === 0 ? (
-            <div className={`px-6 py-10 text-center ${dark ? 'text-slate-500' : 'text-slate-400'}`}>
-              No action items yet. Add more issues with coordinates to see the live queue.
-            </div>
-          ) : (
-            actionQueue.map((a, idx) => (
-              <button
-                key={a._id}
-                onClick={() => {
-                  const found = complaints?.find?.((c) => c._id === a._id);
-                  if (found) onSelectComplaint?.(found);
-                }}
-                className={`w-full text-left px-6 py-4 transition-colors ${dark ? 'hover:bg-slate-800' : 'hover:bg-slate-50'}`}
-                type="button"
-              >
-                <div className="flex items-start gap-4">
-                  <div className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 ${dark ? 'bg-slate-800 text-slate-300' : 'bg-slate-100 text-slate-600'}`}>
-                    <span className="text-xs font-black">#{idx + 1}</span>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className={`text-sm font-bold leading-snug ${dark ? 'text-slate-200' : 'text-slate-900'}`}>{a.title}</div>
-                    <div className={`text-[11px] mt-1 flex flex-wrap items-center gap-3 ${dark ? 'text-slate-500' : 'text-slate-500'}`}>
-                      <span className="flex items-center gap-1.5">
-                        <i className="fas fa-location-dot text-[10px]" />
-                        {a.location?.split(',').slice(0, 2).join(',') || '—'}
-                      </span>
-                      <span className="flex items-center gap-1.5">
-                        <i className="fas fa-heart text-[10px]" />
-                        {a.likes}
-                      </span>
-                      <span className="flex items-center gap-1.5">
-                        <i className="fas fa-clock text-[10px]" />
-                        {a.ageDays}d
-                      </span>
-                    </div>
-                    <div className={`text-[10px] mt-2 font-bold ${dark ? 'text-blue-400' : 'text-blue-600'}`}>{a.reason}</div>
-                  </div>
-                  <div className="flex flex-col items-end gap-2 flex-shrink-0">
-                    {(() => {
-                      const label = a.status === 'pending' ? 'Pending' : a.status === 'inprogress' ? 'In Progress' : 'Resolved';
-                      return (
-                        <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full border ${statusCls(label, dark)}`}>
-                          {label}
-                        </span>
-                      );
-                    })()}
-                    <span className={`text-[10px] font-black ${dark ? 'text-slate-400' : 'text-slate-500'}`}>Score {a.score}</span>
-                  </div>
-                </div>
-              </button>
-            ))
-          )}
-        </div>
+      <div className="p-4">
+        <MumbaiMap
+          hotspots={hotspots}
+          fullscreen={false}
+          onFullscreen={() => setMapFullscreen(true)}
+        />
       </div>
+    </div>
+  );
 
-      <div className={`rounded-2xl border shadow-sm ${card(dark)}`}>
-        <div className={`flex items-center justify-between px-6 py-4 border-b ${dark ? 'border-slate-700' : 'border-slate-100'}`}>
+  const areaRanking = (
+    <div className={`rounded-2xl border shadow-sm ${card(dark)}`}>
+      <div className={`flex items-center justify-between px-6 py-4 border-b ${dark ? 'border-slate-700' : 'border-slate-100'}`}>
+        <div>
           <h3 className={`text-sm font-black ${dark ? 'text-white' : 'text-slate-900'}`}>Area-wise Issue Ranking</h3>
-          <span className={`text-xs font-bold px-3 py-1 rounded-xl ${dark ? 'bg-slate-800 text-slate-400' : 'bg-slate-100 text-slate-500'}`}>{hotspots.length} zones</span>
+          <p className={`text-xs mt-0.5 ${dark ? 'text-slate-400' : 'text-slate-400'}`}>All zones ranked by open complaints</p>
         </div>
-        <div className="divide-y divide-slate-50">
-          {sortedHotspots.map((spot, i) => {
-            const color = getColor(spot.issues);
-            const label = getLabel(spot.issues);
-            const resolvePct = Math.round((spot.resolved / spot.issues) * 100);
-            return (
-              <div key={spot.name} className={`flex items-center gap-4 px-6 py-3.5 transition-colors ${dark ? 'divide-slate-800 hover:bg-slate-800' : 'hover:bg-slate-50'}`}>
-                <span className={`text-xs font-black w-6 text-center ${i === 0 ? 'text-red-500' : dark ? 'text-slate-500' : 'text-slate-300'}`}>#{i + 1}</span>
-                <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: color }} />
-                <div className="flex-1 min-w-0">
-                  <span className={`text-sm font-bold ${dark ? 'text-slate-200' : 'text-slate-800'}`}>{spot.name}</span>
-                  <span className={`ml-2 text-[10px] font-semibold ${dark ? 'text-slate-500' : 'text-slate-400'}`}>Top: {spot.top}</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className={`hidden sm:flex flex-col items-end`}>
-                    <div className={`w-24 h-1.5 rounded-full overflow-hidden ${dark ? 'bg-slate-700' : 'bg-slate-100'}`}>
-                      <div className="h-full rounded-full" style={{ width: `${resolvePct}%`, background: '#059669' }} />
-                    </div>
-                    <span className={`text-[9px] mt-0.5 ${dark ? 'text-slate-500' : 'text-slate-400'}`}>{spot.resolved}/{spot.issues} resolved</span>
+        <span className={`text-xs font-bold px-3 py-1 rounded-xl ${dark ? 'bg-slate-800 text-slate-400' : 'bg-slate-100 text-slate-500'}`}>{sortedHotspots.length} zones</span>
+      </div>
+      <div className={`divide-y ${dark ? 'divide-slate-800' : 'divide-slate-50'}`}>
+        {sortedHotspots.map((spot, i) => {
+          const color = getColor(spot.issues);
+          const label = getLabel(spot.issues);
+          const resolvePct = Math.round((spot.resolved / spot.issues) * 100);
+          return (
+            <div key={spot.name} className={`flex items-center gap-4 px-6 py-3.5 transition-colors ${dark ? 'hover:bg-slate-800' : 'hover:bg-slate-50'}`}>
+              <span className={`text-xs font-black w-6 text-center ${i === 0 ? 'text-red-500' : i === 1 ? 'text-orange-500' : dark ? 'text-slate-500' : 'text-slate-300'}`}>#{i + 1}</span>
+              <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: color }} />
+              <div className="flex-1 min-w-0">
+                <span className={`text-sm font-bold ${dark ? 'text-slate-200' : 'text-slate-800'}`}>{spot.name}</span>
+                <span className={`ml-2 text-[10px] font-semibold ${dark ? 'text-slate-500' : 'text-slate-400'}`}>Top: {spot.top}</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="hidden sm:flex flex-col items-end">
+                  <div className={`w-24 h-1.5 rounded-full overflow-hidden ${dark ? 'bg-slate-700' : 'bg-slate-100'}`}>
+                    <div className="h-full rounded-full" style={{ width: `${resolvePct}%`, background: '#059669' }} />
                   </div>
-                  <span className="text-sm font-black" style={{ color }}>{spot.issues}</span>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg" style={{ background: `${color}18`, color }}>{label}</span>
+                  <span className={`text-[9px] mt-0.5 ${dark ? 'text-slate-500' : 'text-slate-400'}`}>{spot.resolved}/{spot.issues} resolved</span>
                 </div>
+                <span className="text-sm font-black" style={{ color }}>{spot.issues}</span>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg" style={{ background: `${color}18`, color }}>{label}</span>
               </div>
-            );
-          })}
-        </div>
-      </div>
-
-      <div className="grid lg:grid-cols-2 gap-5">
-        <div className={`rounded-2xl border p-6 shadow-sm ${card(dark)}`}>
-          <div className="flex items-center justify-between mb-5">
-            <h3 className={`text-sm font-black ${dark ? 'text-white' : 'text-slate-900'}`}>Monthly Overview</h3>
-            <div className="flex items-center gap-3">
-              <span className="flex items-center gap-1.5 text-[11px] font-bold text-blue-500"><span className="w-2 h-2 rounded bg-blue-500" />Resolved</span>
-              <span className="flex items-center gap-1.5 text-[11px] font-bold text-amber-500"><span className="w-2 h-2 rounded bg-amber-400" />Pending</span>
             </div>
-          </div>
-          <div className="flex items-end gap-4 h-40">
-            {months.map((m, i) => (
-              <div key={i} className="flex-1 flex flex-col items-center gap-2">
-                <div className="w-full flex gap-0.5 items-end" style={{ height: '128px' }}>
-                  <div className="flex-1 rounded-t-md bg-blue-500" style={{ height: `${(resolved[i] / maxV) * 100}%` }} />
-                  <div className="flex-1 rounded-t-md bg-amber-400" style={{ height: `${(pending[i] / maxV) * 100}%` }} />
-                </div>
-                <span className={`text-[10px] font-bold ${dark ? 'text-slate-500' : 'text-slate-400'}`}>{m}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className={`rounded-2xl border p-6 shadow-sm ${card(dark)}`}>
-          <h3 className={`text-sm font-black mb-5 ${dark ? 'text-white' : 'text-slate-900'}`}>Category Breakdown</h3>
-          <div className="space-y-4">
-            {(catBreakdown.length > 0 ? catBreakdown : []).map((c, i) => {
-              const pct = Math.round((c.count / catTotal) * 100);
-              const name = c.category.charAt(0).toUpperCase() + c.category.slice(1);
-              const color = catColors[c.category] || '#64748b';
-              return { name, pct, color };
-            }).map((c, i) => (
-              <div key={i} className="flex items-center gap-3">
-                <span className={`text-xs font-bold w-20 ${dark ? 'text-slate-300' : 'text-slate-600'}`}>{c.name}</span>
-                <div className={`flex-1 h-2 rounded-full overflow-hidden ${dark ? 'bg-slate-700' : 'bg-slate-100'}`}>
-                  <div className="h-full rounded-full" style={{ width: `${c.pct}%`, background: c.color }} />
-                </div>
-                <span className={`text-xs font-black w-8 text-right ${dark ? 'text-slate-300' : 'text-slate-700'}`}>{c.pct}%</span>
-              </div>
-            ))}
-          </div>
-        </div>
+          );
+        })}
       </div>
+    </div>
+  );
 
-      <div>
-        <h3 className={`text-sm font-black mb-3 ${dark ? 'text-white' : 'text-slate-900'}`}>Key Insights for Mumbai Admin</h3>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {INSIGHTS.map((ins, i) => (
-            <div key={i} className={`rounded-2xl border p-5 shadow-sm hover:shadow-md transition-all ${card(dark)}`}>
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3 flex-shrink-0" style={{ background: dark ? `${ins.color}20` : ins.bg }}>
-                <i className={`fas ${ins.icon} text-sm`} style={{ color: ins.color }} />
+  const top20Actions = (
+    <div className={`rounded-2xl border shadow-sm overflow-hidden ${card(dark)}`}>
+      <div className={`flex items-center justify-between px-6 py-4 border-b ${dark ? 'border-slate-700' : 'border-slate-100'}`}>
+        <div>
+          <h3 className={`text-sm font-black ${dark ? 'text-white' : 'text-slate-900'}`}>Top 20 Actions Today</h3>
+          <p className={`text-xs mt-0.5 ${dark ? 'text-slate-400' : 'text-slate-400'}`}>Auto-prioritized: unassigned, overdue, high-support, fast wins</p>
+        </div>
+        <span className={`text-xs font-bold px-3 py-1 rounded-xl ${dark ? 'bg-slate-800 text-slate-400' : 'bg-slate-100 text-slate-500'}`}>
+          {actionQueue.length}/20
+        </span>
+      </div>
+      <div className={`${dark ? 'divide-slate-800' : 'divide-slate-100'} divide-y`}>
+        {actionQueue.length === 0 ? (
+          <div className={`px-6 py-10 text-center ${dark ? 'text-slate-500' : 'text-slate-400'}`}>
+            No action items yet. Add more issues with coordinates to see the live queue.
+          </div>
+        ) : (
+          actionQueue.slice(0, 20).map((a, idx) => (
+            <button
+              key={a._id}
+              onClick={() => {
+                const found = complaints?.find?.((c) => c._id === a._id);
+                if (found) onSelectComplaint?.(found);
+              }}
+              className={`w-full text-left px-6 py-4 transition-colors ${dark ? 'hover:bg-slate-800' : 'hover:bg-slate-50'}`}
+              type="button"
+            >
+              <div className="flex items-start gap-4">
+                <div className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 ${dark ? 'bg-slate-800 text-slate-300' : 'bg-slate-100 text-slate-600'}`}>
+                  <span className="text-xs font-black">#{idx + 1}</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className={`text-sm font-bold leading-snug ${dark ? 'text-slate-200' : 'text-slate-900'}`}>{a.title}</div>
+                  <div className={`text-[11px] mt-1 flex flex-wrap items-center gap-3 ${dark ? 'text-slate-500' : 'text-slate-500'}`}>
+                    <span className="flex items-center gap-1.5"><i className="fas fa-location-dot text-[10px]" />{a.location?.split(',').slice(0, 2).join(',') || '—'}</span>
+                    <span className="flex items-center gap-1.5"><i className="fas fa-heart text-[10px]" />{a.likes}</span>
+                    <span className="flex items-center gap-1.5"><i className="fas fa-clock text-[10px]" />{a.ageDays}d</span>
+                  </div>
+                  <div className={`text-[10px] mt-2 font-bold ${dark ? 'text-blue-400' : 'text-blue-600'}`}>{a.reason}</div>
+                </div>
+                <div className="flex flex-col items-end gap-2 flex-shrink-0">
+                  {(() => {
+                    const label = a.status === 'pending' ? 'Pending' : a.status === 'inprogress' ? 'In Progress' : 'Resolved';
+                    return <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full border ${statusCls(label, dark)}`}>{label}</span>;
+                  })()}
+                  <span className={`text-[10px] font-black ${dark ? 'text-slate-400' : 'text-slate-500'}`}>Score {a.score}</span>
+                </div>
               </div>
-              <p className={`text-sm font-bold mb-1 ${dark ? 'text-slate-100' : 'text-slate-900'}`}>{ins.title}</p>
-              <p className={`text-xs leading-relaxed ${dark ? 'text-slate-400' : 'text-slate-500'}`}>{ins.desc}</p>
+            </button>
+          ))
+        )}
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Fullscreen map overlay — covers content area only (not sidebar) */}
+      {mapFullscreen && (
+        <div
+          className="fixed top-0 right-0 bottom-0 z-50 lg:left-[240px] left-0"
+          style={{ background: dark ? '#0f172a' : '#f8fafc' }}
+        >
+          <MumbaiMap
+            hotspots={hotspots}
+            fullscreen={true}
+            onExitFullscreen={() => setMapFullscreen(false)}
+          />
+        </div>
+      )}
+
+      <div className="space-y-5">
+        {/* Stat cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            { label: 'Avg Resolution', value: avgDays === 'N/A' ? 'N/A' : `${avgDays} days`, icon: 'fa-stopwatch', color: '#2563eb', bg: '#eff6ff' },
+            { label: 'Resolution Rate', value: satisfaction, icon: 'fa-star', color: '#d97706', bg: '#fffbeb' },
+            { label: 'Peak Category', value: peakCat, icon: 'fa-trash', color: '#7c3aed', bg: '#f5f3ff' },
+            { label: 'Response Rate', value: responseRate, icon: 'fa-reply', color: '#059669', bg: '#ecfdf5' },
+          ].map((s, i) => (
+            <div key={i} className={`rounded-2xl border p-5 shadow-sm hover:shadow-md transition-all ${card(dark)}`}>
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4" style={{ background: dark ? `${s.color}20` : s.bg }}>
+                <i className={`fas ${s.icon} text-base`} style={{ color: s.color }} />
+              </div>
+              <div className={`text-2xl font-black ${dark ? 'text-white' : 'text-slate-900'}`}>{s.value}</div>
+              <div className={`text-xs font-semibold mt-1 ${dark ? 'text-slate-400' : 'text-slate-400'}`}>{s.label}</div>
             </div>
           ))}
         </div>
+
+        {/* 1. Heatmap */}
+        {mapCard}
+
+        {/* 2. Area-wise ranking */}
+        {areaRanking}
+
+        {/* 3. Top 20 Actions */}
+        {top20Actions}
+
+        {/* Monthly + Category */}
+        <div className="grid lg:grid-cols-2 gap-5">
+          <div className={`rounded-2xl border p-6 shadow-sm ${card(dark)}`}>
+            <div className="flex items-center justify-between mb-5">
+              <h3 className={`text-sm font-black ${dark ? 'text-white' : 'text-slate-900'}`}>Monthly Overview</h3>
+              <div className="flex items-center gap-3">
+                <span className="flex items-center gap-1.5 text-[11px] font-bold text-blue-500"><span className="w-2 h-2 rounded bg-blue-500" />Resolved</span>
+                <span className="flex items-center gap-1.5 text-[11px] font-bold text-amber-500"><span className="w-2 h-2 rounded bg-amber-400" />Pending</span>
+              </div>
+            </div>
+            <div className="flex items-end gap-4 h-40">
+              {months.map((m, i) => (
+                <div key={i} className="flex-1 flex flex-col items-center gap-2">
+                  <div className="w-full flex gap-0.5 items-end" style={{ height: '128px' }}>
+                    <div className="flex-1 rounded-t-md bg-blue-500" style={{ height: `${(resolved[i] / maxV) * 100}%` }} />
+                    <div className="flex-1 rounded-t-md bg-amber-400" style={{ height: `${(pending[i] / maxV) * 100}%` }} />
+                  </div>
+                  <span className={`text-[10px] font-bold ${dark ? 'text-slate-500' : 'text-slate-400'}`}>{m}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className={`rounded-2xl border p-6 shadow-sm ${card(dark)}`}>
+            <h3 className={`text-sm font-black mb-5 ${dark ? 'text-white' : 'text-slate-900'}`}>Category Breakdown</h3>
+            <div className="space-y-4">
+              {(catBreakdown.length > 0 ? catBreakdown : []).map((c) => {
+                const pct = Math.round((c.count / catTotal) * 100);
+                const name = c.category.charAt(0).toUpperCase() + c.category.slice(1);
+                const color = catColors[c.category] || '#64748b';
+                return { name, pct, color };
+              }).map((c, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <span className={`text-xs font-bold w-20 ${dark ? 'text-slate-300' : 'text-slate-600'}`}>{c.name}</span>
+                  <div className={`flex-1 h-2 rounded-full overflow-hidden ${dark ? 'bg-slate-700' : 'bg-slate-100'}`}>
+                    <div className="h-full rounded-full" style={{ width: `${c.pct}%`, background: c.color }} />
+                  </div>
+                  <span className={`text-xs font-black w-8 text-right ${dark ? 'text-slate-300' : 'text-slate-700'}`}>{c.pct}%</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Key Insights */}
+        <div>
+          <h3 className={`text-sm font-black mb-3 ${dark ? 'text-white' : 'text-slate-900'}`}>Key Insights for Mumbai Admin</h3>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {INSIGHTS.map((ins, i) => (
+              <div key={i} className={`rounded-2xl border p-5 shadow-sm hover:shadow-md transition-all ${card(dark)}`}>
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3 flex-shrink-0" style={{ background: dark ? `${ins.color}20` : ins.bg }}>
+                  <i className={`fas ${ins.icon} text-sm`} style={{ color: ins.color }} />
+                </div>
+                <p className={`text-sm font-bold mb-1 ${dark ? 'text-slate-100' : 'text-slate-900'}`}>{ins.title}</p>
+                <p className={`text-xs leading-relaxed ${dark ? 'text-slate-400' : 'text-slate-500'}`}>{ins.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
