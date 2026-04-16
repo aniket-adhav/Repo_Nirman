@@ -41,7 +41,7 @@ function TrendingCard({ issue, isActive, onSupport, onClick, t, cardW = 300 }) {
         background: cardBg,
         border: isActive ? '1.5px solid rgba(59,130,246,0.28)' : `1px solid ${border}`,
         boxShadow: 'none',
-        transform: `scale(${isActive ? 1.05 : 0.93})`,
+        transform: `scale(${isActive ? 1.13 : 0.93})`,
         opacity: isActive ? 1 : 0.6,
         transition: 'transform 0.42s cubic-bezier(.4,0,.2,1), opacity 0.42s ease, box-shadow 0.42s ease',
         cursor: 'pointer',
@@ -207,7 +207,7 @@ function TrendingCarousel({ issues, onSupport, onOpen, t }) {
         style={{ overflow:'hidden', margin:'16px 0 12px' }}
       >
         {/* add vertical padding inside a non-clipping wrapper so scale has room */}
-        <div style={{ padding:'18px 0 20px' }}>
+        <div style={{ padding:'30px 0 20px' }}>
           <div style={{
             display:'flex',
             gap: CARD_GAP,
