@@ -397,8 +397,8 @@ export default function CommunityFeed() {
       </div>
 
       {/* Category filters */}
-      <div className="mb-5 overflow-x-auto scrollbar-none">
-        <div className="flex gap-2 pb-1">
+      <div className="mb-5">
+        <div className="flex flex-wrap gap-2">
           {allFilters.map(f => {
             const isActive = activeFilter === f.id;
             const isMyArea = f.id === 'myarea';
@@ -406,7 +406,7 @@ export default function CommunityFeed() {
             <button
               key={f.id}
               onClick={isMyArea ? handleMyArea : () => setActiveFilter(f.id)}
-              className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap border transition-all duration-200 ${
+              className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold border transition-all duration-200 ${
                 isActive
                   ? 'text-primary-foreground border-transparent shadow-md'
                   : isMyArea
